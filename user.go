@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func allUsers(w http.ResponseWriter, r *http.Request) {
@@ -104,18 +106,12 @@ func updateUsers(w http.ResponseWriter, r *http.Request) {
 
 func deleteUsers(w http.ResponseWriter, r *http.Request) {
 	var response Response
+	var id = mux.Vars(r)["id"]
 
 	db := connect()
 	defer db.Close()
 
-	err := r.ParseForm()
-	if err != nil {
-		panic(err)
-	}
-
-	id := r.Form.Get("user_id")
-
-	_, err = db.Exec("DELETE from person where id = ?",
+	_, err := db.Exec("DELETE from person where id = ?",
 		id,
 	)
 
